@@ -53,10 +53,8 @@ RUN apt-get update && apt-get install -y \
 
 RUN         Rscript -e "\
             chooseCRANmirror(graphics=FALSE, ind=60); \
-            install.packages(c('parallel', 'methods', 'fslr', 'rlist', 'neurobase', 'dplyr', 'remotes', 'geepack')); \
+            install.packages(c('parallel', 'methods', 'fslr', 'rlist', 'neurobase', 'dplyr', 'geepack', 'argparser')); \
             source('https://neuroconductor.org/neurocLite.R'); neuro_install(c('ANTsR', 'extrantsr'), release='stable');"
-
-# Install isla package: change to install from github once package is public
 
 COPY app app
 
