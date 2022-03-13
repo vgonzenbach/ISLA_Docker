@@ -18,7 +18,7 @@ if (! exists('argv')){
     p <- add_argument(p, "--ximg", help = "Path to X nifti image")
     p <- add_argument(p, "--yimg", help = "Path to Y nifti image")
     p <- add_argument(p, "--brainmask", help = "Path to nifti brain mask")
-    p <- add_argument(p, "--submask", help = "Path to  subset of brain mask", default=NULL)
+    p <- add_argument(p, "--submask", help = "Path to  subset of brain mask")
     p <- add_argument(p, "--nsize", help = "Size of sphere", default = 3)
     argv <- parse_args(p)
 } 
@@ -28,14 +28,20 @@ if (! exists('argv')){
 # sprintf("IMCo running with the following paramaters:\n Outdir: %s\n%s\n%s " ) #
 
 outdir <- argv$outdir # create directory if it doesn't exist
-print('Reading brainmask...'); brainmask <- neurobase::readnii(argv$brainmask)
-print('Reading submask...'); submask <- ifelse(argv$submask != NULL, neurobase::readnii(argv$submask), NULL)
+message('Reading brainmask...'); brainmask <- neurobase::readnii(argv$brainmask)
+message('Reading submask...');
+if (is.na(argv$submask)){
+    submask = NULL
+} else {
+    submask = neurobase::readnii(argv$submask)
+}
 
-print('Reading ximg...'); ximg <- neurobase::readnii(argv$ximg) 
-print('Reading yimg...'); yimg <- neurobase::readnii(argv$yimg)
+message('Reading ximg...'); ximg <- neurobase::readnii(argv$ximg) 
+message('Reading yimg...'); yimg <- neurobase::readnii(argv$yimg)
 
 nsize <- argv$nsize
 
 print('Running IMCo...')
+options(fsl.path = "/fsl-6.0.1", fsl.outputtype = "NIFTI_GZ")
 imco(files=list(yimg, ximg), brainMask=brainmask, subMask=submask, type="regression", ref=1, fwhm=nsize, thresh=0.005, radius=NULL, reverse=FALSE, verbose=TRUE, retimg=FALSE, outDir=outdir)
 
