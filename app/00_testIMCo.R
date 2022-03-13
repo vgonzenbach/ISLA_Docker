@@ -41,7 +41,10 @@ message('Reading yimg...'); yimg <- neurobase::readnii(argv$yimg)
 
 nsize <- argv$nsize
 
-print('Running IMCo...')
+message('Running IMCo...')
 options(fsl.path = "/fsl-6.0.1", fsl.outputtype = "NIFTI_GZ")
-imco(files=list(yimg, ximg), brainMask=brainmask, subMask=submask, type="regression", ref=1, fwhm=nsize, thresh=0.005, radius=NULL, reverse=FALSE, verbose=TRUE, retimg=FALSE, outDir=outdir)
+res = isla::imco(files=list(yimg, ximg), brainMask=brainmask, subMask=submask, type="regression", ref=1, fwhm=nsize, thresh=0.005, radius=NULL, reverse=FALSE, verbose=TRUE, retimg=TRUE, outDir=outdir)
 
+predicted = res$intercept[[1]] + res$slopes[[1]]
+neurobase::writenii(predicted, file.path(outdir, "predictedGMD1"))
+message(sprintf("Results saved at %s", outdir))
