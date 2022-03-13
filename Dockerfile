@@ -14,3 +14,5 @@ WORKDIR /app
 RUN Rscript -e "install.packages('./isla', repos = NULL, type='source')" 
            #&& rm -rf isla
 
+ENTRYPOINT ["Rscript", "run_ISLA.R"]
+

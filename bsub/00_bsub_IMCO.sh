@@ -43,7 +43,7 @@ for  thr in 10 20; do
             if [ ! -e "$outdir" ]; then mkdir "$outdir"; fi
 
             printf " ximg: %s\n yimg: %s\n brainmask: %s\n nsize: %s\n outdir: %s\n\n" $ximg $yimg $brainmask $nsize $outdir
-            docker run --rm -it -v $(pwd)/data:/app/data -v $(pwd)/results:/app/results isla:main Rscript 00_testIMCo.R --ximg "$ximg" --yimg "$yimg" \
+            docker run --rm -v $(pwd)/data:/app/data -v $(pwd)/results:/app/results isla --ximg "$ximg" --yimg "$yimg" \
                 --brainmask "$brainmask" --nsize "$nsize" --outdir "$outdir"
             
         done
