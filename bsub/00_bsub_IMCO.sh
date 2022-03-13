@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ToDo: change to bsub when singularity is ready
-# Read arguments
+# Check arguments
 if [ -z "$1" ]
   then
     echo "No argument supplied"
@@ -19,31 +19,33 @@ elif [ $mode == 'reho' ]; then echo 'Not implemented'; exit; fi
 
 # Create output directories if not found
 if [ ! -e results ]; then mkdir results; fi
-if [ ! -e results/"$mode" ]; then mkdir results/"$mode"; fi
 
 # Run IMCo iteratively over all subjects
 SUBJECTS=($(sed '1d' data/n1132_linnCoupling_ltnT1AslVox_subjects.csv | cut -d, -f2))
 
-for subj in ${SUBJECTS[@]}; do 
-    # Set subject-specific arguments
-
-    subj=${subj:0:4} # Get only the first four digits
+for  thr in 10 20; do 
     
-    if [ ! -e results/"$mode"/"$subj" ]; then mkdir results/"$mode"/"$subj"; fi
+    thr_dir=$(printf "results/coupling_maps_gm%s" $thr)
+    if [ ! -e "$thr_dir" ]; then mkdir "$thr_dir"; fi
 
-    ximg="data/voxelwiseMaps_gmd/${subj}_atropos3class_prob02SubjToTemp2mm.nii.gz"
-    yimg=$(printf $f_yimg $subj)
-    
-    for thr in 10 20; do
+    for nsize in 2 3 4; do
         # Set brainmask depending on threshold
-        brainmask=$(printf $f_brainmask $thr)
-        
-        for nsize in 2 3 4; do
+        size_dir=$(printf "%s/gmd_%s_size%s" $thr_dir $mode $nsize)
+        if [ ! -e "$size_dir" ]; then mkdir "$size_dir"; fi
+
+        for subj in ${SUBJECTS[@]}; do
+            # Set subject-specific arguments    
+            subj=${subj:0:4} # Get only the first four digits
+            ximg="data/voxelwiseMaps_gmd/${subj}_atropos3class_prob02SubjToTemp2mm.nii.gz"
+            yimg=$(printf $f_yimg $subj)
+            brainmask=$(printf $f_brainmask $thr)
+            outdir=$(printf "%s/%s" $size_dir $subj)
+            if [ ! -e "$outdir" ]; then mkdir "$outdir"; fi
+
             printf " ximg: %s\n yimg: %s\n brainmask: %s\n nsize: %s\n outdir: %s\n\n" $ximg $yimg $brainmask $nsize $outdir
             docker run --rm -it -v $(pwd)/data:/app/data -v $(pwd)/results:/app/results isla:main Rscript 00_testIMCo.R --ximg "$ximg" --yimg "$yimg" \
-                --brainmask "$brainmask" --nsize "$nsize" --outdir "results/${mode}/${subj}"
+                --brainmask "$brainmask" --nsize "$nsize" --outdir "$outdir"
             
         done
-        exit
     done
 done
