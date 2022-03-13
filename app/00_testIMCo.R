@@ -17,7 +17,7 @@ if (! exists('argv')){
     p <- add_argument(p, "--outdir", help = "Output directory", default = "tmp/out")
     p <- add_argument(p, "--ximg", help = "Path to X nifti image")
     p <- add_argument(p, "--yimg", help = "Path to Y nifti image")
-    p <- add_argument(p, "--brainmask", help = "Path to nifti brain mask", default=NULL)
+    p <- add_argument(p, "--brainmask", help = "Path to nifti brain mask")
     p <- add_argument(p, "--submask", help = "Path to  subset of brain mask", default=NULL)
     p <- add_argument(p, "--nsize", help = "Size of sphere", default = 3)
     argv <- parse_args(p)
@@ -28,7 +28,7 @@ if (! exists('argv')){
 # sprintf("IMCo running with the following paramaters:\n Outdir: %s\n%s\n%s " ) #
 
 outdir <- argv$outdir # create directory if it doesn't exist
-print('Reading brainmask...'); brainmask <- ifelse(argv$brainmask != NULL, neurobase::readnii(argv$brainmask), NULL)
+print('Reading brainmask...'); brainmask <- neurobase::readnii(argv$brainmask)
 print('Reading submask...'); submask <- ifelse(argv$submask != NULL, neurobase::readnii(argv$submask), NULL)
 
 print('Reading ximg...'); ximg <- neurobase::readnii(argv$ximg) 
