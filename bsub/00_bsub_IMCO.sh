@@ -2,6 +2,11 @@
 
 # ToDo: change to bsub when singularity is ready
 # Read arguments
+if [ -z "$1" ]
+  then
+    echo "No argument supplied"
+    exit
+fi
 mode=$1 # modes = {cbf, alff, reho}
 
 # Set format string depending on 
