@@ -3,7 +3,7 @@
 docker run --rm kaczmarj/neurodocker:0.6.0 generate docker \
     --pkg-manager apt \
     --base debian:buster \
-    --run "apt-get update && apt-get install -y multiarch-support" \
+    --run "apt-get update && apt-get install -y multiarch-support --no-install-recommends" \
     --ants version=2.3.1 \
     --fsl version=6.0.1 \
     | docker build -t neurodocker:isla -
