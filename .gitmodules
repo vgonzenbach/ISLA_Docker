@@ -1,0 +1,3 @@
+[submodule "app/isla"]
+	path = app/isla
+	url = https://github.com/kalinn/isla.git
