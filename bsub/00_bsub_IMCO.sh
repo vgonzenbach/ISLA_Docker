@@ -12,8 +12,8 @@ mode=$1 # modes = {cbf, alff, reho}
 # Set format string depending on 
 if [ $mode == 'cbf' ]; then 
      # set format string for files
-    f_brainmask="data/masks/CBF_GMD_thr%s_2mm_mask.nii.gz"
-    f_yimg="data/voxelwiseMaps_cbf/%s_asl_quant_ssT1Std.nii.gz"
+    f_brainmask="/project/kristin_imco/masks/final_gm%s_cbf.nii.gz "
+    f_yimg="/project/pnc/n1601_dataFreeze2016/neuroimaging/asl/voxelwiseMaps_cbf/%s_asl_quant_ssT1Std.nii.gz"
 elif [ $mode == 'alff' ]; then echo 'Not implemented'; exit
 elif [ $mode == 'reho' ]; then echo 'Not implemented'; exit; fi
 
@@ -21,7 +21,7 @@ elif [ $mode == 'reho' ]; then echo 'Not implemented'; exit; fi
 if [ ! -e results ]; then mkdir results; fi
 
 # Run IMCo iteratively over all subjects
-SUBJECTS=($(sed '1d' data/n1132_linnCoupling_ltnT1AslVox_subjects.csv | cut -d, -f2))
+SUBJECTS=($(sed '1d' /project/kristin_imco/subject_lists/n1132_cbf_subjList.csv | cut -d, -f2 | head -n20))
 
 for  thr in 10 20; do 
     
@@ -36,7 +36,7 @@ for  thr in 10 20; do
         for subj in ${SUBJECTS[@]}; do
             # Set subject-specific arguments    
             subj=${subj:0:4} # Get only the first four digits
-            ximg="data/voxelwiseMaps_gmd/${subj}_atropos3class_prob02SubjToTemp2mm.nii.gz"
+            ximg="/project/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/voxelwiseMaps_gmd/${subj}_atropos3class_prob02SubjToTemp2mm.nii.gz"
             yimg=$(printf $f_yimg $subj)
             brainmask=$(printf $f_brainmask $thr)
             outdir=$(printf "%s/%s" $size_dir $subj)
