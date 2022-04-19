@@ -43,8 +43,8 @@ for  thr in 10 20; do
             if [ ! -e "$outdir" ]; then mkdir "$outdir"; fi
 
             printf " ximg: %s\n yimg: %s\n brainmask: %s\n nsize: %s\n outdir: %s\n\n" $ximg $yimg $brainmask $nsize $outdir
-            bsub singularity run -B /project:/project -B $(pwd)/results:/results isla.sif --ximg "$ximg" --yimg "$yimg" \
-                --brainmask "$brainmask" --nsize "$nsize" --outdir "$outdir"
+            bsub singularity run -B /project:/project -B $(pwd)/results:/results /project/singularity_images/isla.sif "$yimg","$ximg" \
+                --brainmask "$brainmask" --fwhm "$nsize" --outdir "$outdir" -v
             
         done
     done
