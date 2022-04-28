@@ -47,5 +47,5 @@ message('Running IMCo...')
 res = isla::imco(files=argv$images, brainMask=argv$brainmask, subMask=argv$submask, type=argv$type, ref=1, fwhm=argv$fwhm, thresh=0.005, radius=NULL, reverse=argv$reverse, verbose=argv$verbose, retimg=TRUE, outDir=argv$outdir)
 
 predicted = res$intercept[[1]] + res$slopes[[1]]
-neurobase::writenii(predicted, file.path(outdir, "predictedGMD1"))
-message(sprintf("Results saved at %s", outdir))
+neurobase::writenii(predicted, file.path(argv$outdir, "predictedGMD1"))
+message(sprintf("Results saved at %s", argv$outdir))
